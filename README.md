@@ -1,6 +1,6 @@
 ## Purpose of this solution:
 
-Create a Serilog common library for my projects
+Create a common Serilog library to centralize the logging configuration throughout microservices
 
 Still making use of appsettings but simpler
 
