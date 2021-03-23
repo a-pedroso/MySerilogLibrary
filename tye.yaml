@@ -1,0 +1,44 @@
+name: my-serilog-library
+
+extensions:
+- name: seq
+  logPath: ./.logs
+
+services:
+- name: webapi
+  project: src/Api/API.csproj
+  bindings:
+  - port: 5000
+    name: http
+    protocol: http
+  replicas: 1
+  env:
+  - name: Serilog__WriteTo__1__Name
+    value: LokiHttp
+  - name: Serilog__WriteTo__1__Args__serverUrl
+    value: http://localhost:3100
+
+- name: loki
+  image: grafana/loki
+  bindings:
+  - port: 3100
+    containerPort: 3100
+  volumes:
+  - name: webapi-loki-storage
+    target: /loki
+
+- name: grafana
+  image: grafana/grafana
+  bindings:
+  - port: 3000
+    containerPort: 3000
+    protocol: http
+  env:
+  - name: GF_INSTALL_PLUGINS
+    value: grafana-piechart-panel
+  volumes:
+  - name: webapi-grafana-storage
+    target: /var/lib/grafana
+  - name: datasources-config
+    target: /etc/grafana/provisioning/datasources/datasource.yml
+    source: ./grafana-datasource.yml
