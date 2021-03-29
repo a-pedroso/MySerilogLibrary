@@ -6,7 +6,7 @@ extensions:
 
 services:
 - name: webapi
-  project: src/Api/API.csproj
+  project: sample/Api/API.csproj
   bindings:
   - port: 5000
     name: http
